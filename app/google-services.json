@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "351638065302",
+    "project_id": "eventsusc-38901",
+    "storage_bucket": "eventsusc-38901.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:351638065302:android:0baad527e5de0ad86ff2b7",
+        "android_client_info": {
+          "package_name": "com.example.eventsusc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBikVB9NwYSzsp7NffVlcXcn9rgwQo4Nlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
