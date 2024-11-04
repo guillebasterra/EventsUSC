@@ -1,8 +1,9 @@
 {
   "project_info": {
     "project_number": "351638065302",
+    "firebase_url": "https://eventsusc-38901-default-rtdb.firebaseio.com",
     "project_id": "eventsusc-38901",
-    "storage_bucket": "eventsusc-38901.appspot.com"
+    "storage_bucket": "eventsusc-38901.firebasestorage.app"
   },
   "client": [
     {

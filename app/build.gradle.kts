@@ -36,13 +36,17 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    // Firebase dependencies
+    implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
+    implementation("com.google.android.gms:play-services-auth:20.5.0")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
