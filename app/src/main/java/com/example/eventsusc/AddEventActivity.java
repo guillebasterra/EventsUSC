@@ -14,7 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class AddEventActivity extends AppCompatActivity {
 
-    private EditText eventNameInput, eventDescriptionInput, eventDateTimeInput, eventLocationInput;
+    private EditText eventNameInput, eventDescriptionInput, eventDateTimeInput, eventLocationInput, eventLatitudeInput, eventLongitudeInput;
     private Button addEventButton, cancelButton;
 
     private DatabaseReference eventsDatabaseReference;
@@ -22,17 +22,19 @@ public class AddEventActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_event); //set to xml file for "add event"
+        setContentView(R.layout.add_event); // Set to XML file for "add event"
 
-        // initialize Firebase reference for events
+        // Initialize Firebase reference for events
         eventsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
                 .getReference("Events");
 
-        // initialize UI elements
+        // Initialize UI elements
         eventNameInput = findViewById(R.id.event_name_input);
         eventDescriptionInput = findViewById(R.id.event_description_input);
         eventDateTimeInput = findViewById(R.id.event_date_time_input);
         eventLocationInput = findViewById(R.id.event_location_input);
+        eventLatitudeInput = findViewById(R.id.event_latitude_input);
+        eventLongitudeInput = findViewById(R.id.event_longitude_input);
         addEventButton = findViewById(R.id.add_event_button);
         cancelButton = findViewById(R.id.cancel_button);
 
@@ -53,40 +55,58 @@ public class AddEventActivity extends AppCompatActivity {
                 eventDescriptionInput.setText("");
                 eventDateTimeInput.setText("");
                 eventLocationInput.setText("");
+                eventLatitudeInput.setText("");
+                eventLongitudeInput.setText("");
                 Toast.makeText(AddEventActivity.this, "Event creation canceled", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void addEventToFirebase() {
-        // get input values
+        // Get input values
         String eventName = eventNameInput.getText().toString().trim();
         String eventDescription = eventDescriptionInput.getText().toString().trim();
         String eventDateTime = eventDateTimeInput.getText().toString().trim();
         String eventLocation = eventLocationInput.getText().toString().trim();
+        String latitudeStr = eventLatitudeInput.getText().toString().trim();
+        String longitudeStr = eventLongitudeInput.getText().toString().trim();
 
-        // validate inputs (cannot leave empty)
+        // Validate inputs (cannot leave empty)
         if (TextUtils.isEmpty(eventName) || TextUtils.isEmpty(eventDescription) ||
-                TextUtils.isEmpty(eventDateTime) || TextUtils.isEmpty(eventLocation)) {
+                TextUtils.isEmpty(eventDateTime) || TextUtils.isEmpty(eventLocation) ||
+                TextUtils.isEmpty(latitudeStr) || TextUtils.isEmpty(longitudeStr)) {
             Toast.makeText(this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // generate unique event ID and create event object
-        String eventId = eventsDatabaseReference.push().getKey();
-        Event event = new Event(eventId, eventName, eventDescription, eventDateTime, eventLocation);
+        // Parse latitude and longitude
+        double latitude;
+        double longitude;
+        try {
+            latitude = Double.parseDouble(latitudeStr);
+            longitude = Double.parseDouble(longitudeStr);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid latitude or longitude format", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // store event in Firebase
+        // Generate unique event ID and create event object
+        String eventId = eventsDatabaseReference.push().getKey();
+        Event event = new Event(eventId, eventName, eventDescription, eventDateTime, eventLocation, latitude, longitude);
+
+        // Store event in Firebase
         if (eventId != null) {
             eventsDatabaseReference.child(eventId).setValue(event)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(AddEventActivity.this, "Event added successfully!", Toast.LENGTH_SHORT).show();
-                            // clear input fields after submission
+                            // Clear input fields after submission
                             eventNameInput.setText("");
                             eventDescriptionInput.setText("");
                             eventDateTimeInput.setText("");
                             eventLocationInput.setText("");
+                            eventLatitudeInput.setText("");
+                            eventLongitudeInput.setText("");
                         } else {
                             Toast.makeText(AddEventActivity.this, "Failed to add event: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

@@ -6,17 +6,24 @@ public class Event {
     private String eventDescription;
     private String eventDateTime;
     private String eventLocation;
+    private double latitude;
+    private double longitude;
 
-    // constructor
-    public Event(String eventId, String eventName, String eventDescription, String eventDateTime, String eventLocation) {
+    // Constructor with latitude and longitude
+    public Event(String eventId, String eventName, String eventDescription, String eventDateTime, String eventLocation, double latitude, double longitude) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventDescription = eventDescription;
         this.eventDateTime = eventDateTime;
         this.eventLocation = eventLocation;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    // Firebase getters and setters
+    // Default constructor (required for Firebase)
+    public Event() {}
+
+    // Getters and setters
     public String getEventId() { return eventId; }
     public void setEventId(String eventId) { this.eventId = eventId; }
 
@@ -31,4 +38,10 @@ public class Event {
 
     public String getEventLocation() { return eventLocation; }
     public void setEventLocation(String eventLocation) { this.eventLocation = eventLocation; }
+
+    public double getLatitude() { return latitude; }
+    public void setLatitude(double latitude) { this.latitude = latitude; }
+
+    public double getLongitude() { return longitude; }
+    public void setLongitude(double longitude) { this.longitude = longitude; }
 }
