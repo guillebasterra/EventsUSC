@@ -1,24 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/comments_container"
+    <!-- Original ScrollView layout for comments -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/comments_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Comments"
-            android:textSize="24sp"
-            android:layout_gravity="center_horizontal" />
+            android:orientation="vertical">
 
-        <!-- Comments will be dynamically added here -->
+            <!-- Back button -->
+            <Button
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back to Map"
+                android:padding="8dp"
+                android:layout_marginBottom="16dp" />
 
-    </LinearLayout>
+            <!-- Title for comments -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comments"
+                android:textSize="24sp"
+                android:layout_gravity="center_horizontal" />
 
-</ScrollView>
+            <!-- Comments will be dynamically added here -->
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Get Directions button positioned at the top-right corner -->
+    <Button
+        android:id="@+id/get_directions_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Directions"
+        android:padding="8dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="top|end" />
+
+</FrameLayout>
