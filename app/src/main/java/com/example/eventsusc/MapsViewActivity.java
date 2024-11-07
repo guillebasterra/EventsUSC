@@ -23,12 +23,27 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
     private ActivityMapsViewBinding binding;
     private DatabaseReference eventsDatabaseReference;
 
+    // Variables to hold user data
+    private String userUID;
+    private String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMapsViewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Retrieve user data passed from MainActivity
+        userUID = getIntent().getStringExtra("USER_UID");
+        userEmail = getIntent().getStringExtra("USER_EMAIL");
+
+        // Optional: Display a message with the user email or UID
+        if (userEmail != null) {
+            Toast.makeText(this, "Welcome, " + userEmail, Toast.LENGTH_SHORT).show();
+        } else if (userUID != null) {
+            Toast.makeText(this, "Welcome, user ID: " + userUID, Toast.LENGTH_SHORT).show();
+        }
 
         // Initialize Firebase database reference
         eventsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
