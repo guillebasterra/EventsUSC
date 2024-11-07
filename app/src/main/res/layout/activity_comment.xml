@@ -24,6 +24,23 @@
         android:paddingBottom="16dp"
         android:text="Event Description" />
 
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back to Map"
+        android:padding="8dp"
+        android:layout_marginBottom="16dp" />
+
+    <Button
+        android:id="@+id/get_directions_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Directions"
+        android:padding="8dp"
+        android:layout_margin="16dp"
+        android:layout_gravity="top|end" />
+
     <!-- Comments container -->
     <LinearLayout
         android:id="@+id/comments_container"
