@@ -93,11 +93,12 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
                 String eventDescription = marker.getSnippet(); // assuming snippet is set as description
 
                 if (eventId != null) {
-                    // Start CommentActivity and pass the event ID, name, and description
+                    // Start CommentActivity and pass the event ID, name, description, and user ID
                     Intent intent = new Intent(MapsViewActivity.this, CommentActivity.class);
                     intent.putExtra("EVENT_ID", eventId);
                     intent.putExtra("EVENT_NAME", eventName);
                     intent.putExtra("EVENT_DESCRIPTION", eventDescription);
+                    intent.putExtra("USER_UID", userUID); // Pass the user ID to CommentActivity
                     startActivity(intent);
                 }
                 return true; // Return true to indicate that we have handled the click
