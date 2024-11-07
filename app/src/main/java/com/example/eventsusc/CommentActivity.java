@@ -3,8 +3,10 @@ package com.example.eventsusc;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +21,8 @@ import com.google.firebase.database.ValueEventListener;
 public class CommentActivity extends AppCompatActivity {
 
     private LinearLayout commentsContainer;
+    private EditText newCommentInput;
+    private Button addCommentButton;
     private DatabaseReference commentsDatabaseReference;
     private DatabaseReference eventsDatabaseReference;
     private String eventId;
@@ -50,64 +54,45 @@ public class CommentActivity extends AppCompatActivity {
         eventNameTextView.setText("Event: " + eventName);
         eventDescriptionTextView.setText("Description: " + eventDescription);
 
-        // Initialize the comments container
+        // Initialize the comments container and comment input
         commentsContainer = findViewById(R.id.comments_container);
+        newCommentInput = findViewById(R.id.new_comment_input);
+        addCommentButton = findViewById(R.id.add_comment_button);
 
         // Initialize the upvote and downvote components
         voteCountText = findViewById(R.id.vote_count_text);
         upvoteButton = findViewById(R.id.upvote_button);
         downvoteButton = findViewById(R.id.downvote_button);
 
-        // Set up Firebase reference to the comments of the specific event
+        // Set up Firebase references
         commentsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
                 .getReference("Events").child(eventId).child("Comments");
-
-        // Set up Firebase reference to retrieve the event details
         eventsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
                 .getReference("Events").child(eventId);
 
-        // Load event data
+        // Load event data and comments
         loadEventData();
-
-        // Set up button listeners for upvoting and downvoting
-        upvoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                upvotes++;
-                updateVoteCount();
-                eventsDatabaseReference.child("upvotes").setValue(upvotes);
-            }
-        });
-
-        downvoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                downvotes++;
-                updateVoteCount();
-                eventsDatabaseReference.child("downvotes").setValue(downvotes);
-            }
-        });
-
-        // Set up the "Back to Map" button
-        Button backButton = findViewById(R.id.back_button);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish(); // Finish CommentActivity and return to the previous activity
-            }
-        });
-
-        // Set up the "Get Directions" button
-        Button getDirectionsButton = findViewById(R.id.get_directions_button);
-        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                retrieveEventLocationAndOpenMaps();
-            }
-        });
-
-        // Load comments from Firebase
         loadComments();
+
+        // Add comment functionality
+        addCommentButton.setOnClickListener(v -> addCommentToFirebase());
+
+        // Voting functionality
+        upvoteButton.setOnClickListener(v -> {
+            upvotes++;
+            updateVoteCount();
+            eventsDatabaseReference.child("upvotes").setValue(upvotes);
+        });
+
+        downvoteButton.setOnClickListener(v -> {
+            downvotes++;
+            updateVoteCount();
+            eventsDatabaseReference.child("downvotes").setValue(downvotes);
+        });
+
+        // Back and Get Directions buttons
+        findViewById(R.id.back_button).setOnClickListener(v -> finish());
+        findViewById(R.id.get_directions_button).setOnClickListener(v -> retrieveEventLocationAndOpenMaps());
     }
 
     private void loadEventData() {
@@ -137,8 +122,7 @@ public class CommentActivity extends AppCompatActivity {
         commentsDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                commentsContainer.removeAllViews(); // Clear existing views
-
+                commentsContainer.removeAllViews();
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     Comment comment = commentSnapshot.getValue(Comment.class);
                     if (comment != null) {
@@ -167,6 +151,28 @@ public class CommentActivity extends AppCompatActivity {
 
         commentsContainer.addView(commentTextView);
         commentsContainer.addView(timestampTextView);
+    }
+
+    private void addCommentToFirebase() {
+        String commentText = newCommentInput.getText().toString().trim();
+        if (commentText.isEmpty()) {
+            Toast.makeText(this, "Please enter a comment", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userName = "Anonymous"; // Replace with actual user name if available
+        long timestamp = System.currentTimeMillis();
+        Comment newComment = new Comment(userName, commentText, timestamp);
+
+        commentsDatabaseReference.push().setValue(newComment)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(this, "Comment added", Toast.LENGTH_SHORT).show();
+                        newCommentInput.setText("");
+                    } else {
+                        Toast.makeText(this, "Failed to add comment", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void retrieveEventLocationAndOpenMaps() {
