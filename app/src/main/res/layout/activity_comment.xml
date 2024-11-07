@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Event title and description at the top -->
+    <TextView
+        android:id="@+id/event_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="8dp"
+        android:text="Event Name" />
+
+    <TextView
+        android:id="@+id/event_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingBottom="16dp"
+        android:text="Event Description" />
+
+    <!-- Comments container -->
     <LinearLayout
         android:id="@+id/comments_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Comments"
-            android:textSize="24sp"
-            android:layout_gravity="center_horizontal" />
-
-        <!-- Comments will be dynamically added here -->
-
-    </LinearLayout>
-
-</ScrollView>
+        android:orientation="vertical" />
+</LinearLayout>

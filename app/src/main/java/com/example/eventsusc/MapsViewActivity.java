@@ -87,12 +87,17 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                // Retrieve the event ID associated with this marker
+                // Retrieve the event ID, name, and description associated with this marker
                 String eventId = markerEventMap.get(marker);
+                String eventName = marker.getTitle(); // assuming title is set as event name
+                String eventDescription = marker.getSnippet(); // assuming snippet is set as description
+
                 if (eventId != null) {
-                    // Start CommentActivity and pass the event ID
+                    // Start CommentActivity and pass the event ID, name, and description
                     Intent intent = new Intent(MapsViewActivity.this, CommentActivity.class);
                     intent.putExtra("EVENT_ID", eventId);
+                    intent.putExtra("EVENT_NAME", eventName);
+                    intent.putExtra("EVENT_DESCRIPTION", eventDescription);
                     startActivity(intent);
                 }
                 return true; // Return true to indicate that we have handled the click

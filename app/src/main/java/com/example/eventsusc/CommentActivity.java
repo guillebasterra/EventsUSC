@@ -18,17 +18,24 @@ public class CommentActivity extends AppCompatActivity {
     private LinearLayout commentsContainer;
     private DatabaseReference commentsDatabaseReference;
     private String eventId;
+    private String eventName;
+    private String eventDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        // Get the event ID passed from MapsViewActivity
+        // Get the event details passed from MapsViewActivity
         eventId = getIntent().getStringExtra("EVENT_ID");
+        eventName = getIntent().getStringExtra("EVENT_NAME");
+        eventDescription = getIntent().getStringExtra("EVENT_DESCRIPTION");
 
         // Initialize the LinearLayout container
         commentsContainer = findViewById(R.id.comments_container);
+
+        // Display the event name and description at the top
+        addEventDetailsToView();
 
         // Set up Firebase reference to the comments of the specific event
         commentsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
@@ -38,11 +45,32 @@ public class CommentActivity extends AppCompatActivity {
         loadComments();
     }
 
+    private void addEventDetailsToView() {
+        // Create a TextView for the event name
+        TextView eventNameTextView = new TextView(this);
+        eventNameTextView.setText("Event: " + eventName);
+        eventNameTextView.setPadding(8, 8, 8, 4);
+        eventNameTextView.setTextSize(20);
+        eventNameTextView.setGravity(Gravity.CENTER);
+
+        // Create a TextView for the event description
+        TextView eventDescriptionTextView = new TextView(this);
+        eventDescriptionTextView.setText("Description: " + eventDescription);
+        eventDescriptionTextView.setPadding(8, 4, 8, 12);
+        eventDescriptionTextView.setTextSize(16);
+        eventDescriptionTextView.setGravity(Gravity.CENTER);
+
+        // Add these TextViews to the top of the container
+        commentsContainer.addView(eventNameTextView);
+        commentsContainer.addView(eventDescriptionTextView);
+    }
+
     private void loadComments() {
         commentsDatabaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 commentsContainer.removeAllViews(); // Clear existing views
+                addEventDetailsToView(); // Add event details at the top again
 
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     Comment comment = commentSnapshot.getValue(Comment.class);
