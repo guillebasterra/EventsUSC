@@ -65,6 +65,17 @@
             android:textColor="@android:color/white"
             android:layout_marginBottom="16dp" />
 
+        <!-- "forgot password" button -->
+        <Button
+            android:id="@+id/forgot_password_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:backgroundTint="@color/teal_700"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="16dp" />
+
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
