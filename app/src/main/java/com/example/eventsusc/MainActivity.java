@@ -66,7 +66,15 @@ public class MainActivity extends AppCompatActivity {
                                 // Sign-in success
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 Toast.makeText(MainActivity.this, "Login successful. Welcome, " + user.getEmail(), Toast.LENGTH_SHORT).show();
-                                // Navigate to the main screen or home activity
+
+                                // Navigate to MapsViewActivity and pass user email or UID
+                                Intent intent = new Intent(MainActivity.this, MapsViewActivity.class);
+                                intent.putExtra("USER_UID", user.getUid());
+                                intent.putExtra("USER_EMAIL", user.getEmail());
+                                startActivity(intent);
+
+                                // Optional: Finish MainActivity so that the user can't go back to it
+                                finish();
                             } else {
                                 // If sign in fails, display a message to the user
                                 Toast.makeText(MainActivity.this, "Authentication failed. " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -106,9 +114,10 @@ public class MainActivity extends AppCompatActivity {
                                                 if (saveTask.isSuccessful()) {
                                                     Toast.makeText(MainActivity.this, "User saved in database", Toast.LENGTH_SHORT).show();
 
-                                                    // Start AccountCreatedActivity and pass the user's UID
-                                                    Intent intent = new Intent(MainActivity.this, AccountCreatedActivity.class);
+                                                    // Start MapsViewActivity and pass the user's UID and email
+                                                    Intent intent = new Intent(MainActivity.this, MapsViewActivity.class);
                                                     intent.putExtra("USER_UID", firebaseUser.getUid());
+                                                    intent.putExtra("USER_EMAIL", email);
                                                     startActivity(intent);
 
                                                     // Optional: Finish MainActivity so that the user can't go back to it
