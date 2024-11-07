@@ -1,7 +1,10 @@
 package com.example.eventsusc;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,9 +20,19 @@ public class CommentActivity extends AppCompatActivity {
 
     private LinearLayout commentsContainer;
     private DatabaseReference commentsDatabaseReference;
+    private DatabaseReference eventsDatabaseReference;
     private String eventId;
     private String eventName;
     private String eventDescription;
+    private double eventLatitude;
+    private double eventLongitude;
+
+    private int upvotes;
+    private int downvotes;
+
+    private TextView voteCountText;
+    private Button upvoteButton;
+    private Button downvoteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,38 +44,93 @@ public class CommentActivity extends AppCompatActivity {
         eventName = getIntent().getStringExtra("EVENT_NAME");
         eventDescription = getIntent().getStringExtra("EVENT_DESCRIPTION");
 
-        // Initialize the LinearLayout container
+        // Set the event name and description in the TextViews
+        TextView eventNameTextView = findViewById(R.id.event_name_text);
+        TextView eventDescriptionTextView = findViewById(R.id.event_description_text);
+        eventNameTextView.setText("Event: " + eventName);
+        eventDescriptionTextView.setText("Description: " + eventDescription);
+
+        // Initialize the comments container
         commentsContainer = findViewById(R.id.comments_container);
 
-        // Display the event name and description at the top
-        addEventDetailsToView();
+        // Initialize the upvote and downvote components
+        voteCountText = findViewById(R.id.vote_count_text);
+        upvoteButton = findViewById(R.id.upvote_button);
+        downvoteButton = findViewById(R.id.downvote_button);
 
         // Set up Firebase reference to the comments of the specific event
         commentsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
                 .getReference("Events").child(eventId).child("Comments");
 
+        // Set up Firebase reference to retrieve the event details
+        eventsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
+                .getReference("Events").child(eventId);
+
+        // Load event data
+        loadEventData();
+
+        // Set up button listeners for upvoting and downvoting
+        upvoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                upvotes++;
+                updateVoteCount();
+                eventsDatabaseReference.child("upvotes").setValue(upvotes);
+            }
+        });
+
+        downvoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downvotes++;
+                updateVoteCount();
+                eventsDatabaseReference.child("downvotes").setValue(downvotes);
+            }
+        });
+
+        // Set up the "Back to Map" button
+        Button backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // Finish CommentActivity and return to the previous activity
+            }
+        });
+
+        // Set up the "Get Directions" button
+        Button getDirectionsButton = findViewById(R.id.get_directions_button);
+        getDirectionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                retrieveEventLocationAndOpenMaps();
+            }
+        });
+
         // Load comments from Firebase
         loadComments();
     }
 
-    private void addEventDetailsToView() {
-        // Create a TextView for the event name
-        TextView eventNameTextView = new TextView(this);
-        eventNameTextView.setText("Event: " + eventName);
-        eventNameTextView.setPadding(8, 8, 8, 4);
-        eventNameTextView.setTextSize(20);
-        eventNameTextView.setGravity(Gravity.CENTER);
+    private void loadEventData() {
+        eventsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    upvotes = event.getUpvotes();
+                    downvotes = event.getDownvotes();
+                    updateVoteCount();
+                }
+            }
 
-        // Create a TextView for the event description
-        TextView eventDescriptionTextView = new TextView(this);
-        eventDescriptionTextView.setText("Description: " + eventDescription);
-        eventDescriptionTextView.setPadding(8, 4, 8, 12);
-        eventDescriptionTextView.setTextSize(16);
-        eventDescriptionTextView.setGravity(Gravity.CENTER);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(CommentActivity.this, "Failed to load event data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        // Add these TextViews to the top of the container
-        commentsContainer.addView(eventNameTextView);
-        commentsContainer.addView(eventDescriptionTextView);
+    private void updateVoteCount() {
+        voteCountText.setText(upvotes + " upvotes | " + downvotes + " downvotes");
     }
 
     private void loadComments() {
@@ -70,7 +138,6 @@ public class CommentActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 commentsContainer.removeAllViews(); // Clear existing views
-                addEventDetailsToView(); // Add event details at the top again
 
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     Comment comment = commentSnapshot.getValue(Comment.class);
@@ -88,22 +155,50 @@ public class CommentActivity extends AppCompatActivity {
     }
 
     private void addCommentToView(Comment comment) {
-        // Create a new TextView for each comment
         TextView commentTextView = new TextView(this);
         commentTextView.setText(String.format("%s: %s", comment.getUserName(), comment.getText()));
         commentTextView.setPadding(8, 8, 8, 8);
         commentTextView.setTextSize(16);
-        commentTextView.setGravity(Gravity.START);
 
-        // Optional: Add timestamp as a separate TextView
         TextView timestampTextView = new TextView(this);
         timestampTextView.setText(comment.getFormattedTimestamp());
         timestampTextView.setPadding(8, 4, 8, 12);
         timestampTextView.setTextSize(12);
-        timestampTextView.setGravity(Gravity.END);
 
-        // Add the TextViews to the container
         commentsContainer.addView(commentTextView);
         commentsContainer.addView(timestampTextView);
+    }
+
+    private void retrieveEventLocationAndOpenMaps() {
+        eventsDatabaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Event event = dataSnapshot.getValue(Event.class);
+                if (event != null) {
+                    eventLatitude = event.getLatitude();
+                    eventLongitude = event.getLongitude();
+                    openGoogleMapsDirections();
+                } else {
+                    Toast.makeText(CommentActivity.this, "Event location not found.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(CommentActivity.this, "Failed to load event location", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void openGoogleMapsDirections() {
+        String uri = "google.navigation:q=" + eventLatitude + "," + eventLongitude;
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        intent.setPackage("com.google.android.apps.maps");
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Google Maps not installed", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -1,8 +1,5 @@
 package com.example.eventsusc;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Event {
     private String eventId;
     private String eventName;
@@ -11,7 +8,8 @@ public class Event {
     private String eventLocation;
     private double latitude;
     private double longitude;
-    private List<Comment> comments; // List to store comments
+    private int upvotes;  // New field for upvotes
+    private int downvotes;  // New field for downvotes
 
     // Constructor with latitude and longitude
     public Event(String eventId, String eventName, String eventDescription, String eventDateTime, String eventLocation, double latitude, double longitude) {
@@ -22,17 +20,23 @@ public class Event {
         this.eventLocation = eventLocation;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.comments = new ArrayList<>(); // Initialize comments list
+        this.upvotes = upvotes;
+        this.downvotes = downvotes;
     }
 
     // Default constructor (required for Firebase)
-    public Event() {
-        this.comments = new ArrayList<>(); // Initialize comments list
-    }
+    public Event() {}
 
     // Getters and setters
     public String getEventId() { return eventId; }
     public void setEventId(String eventId) { this.eventId = eventId; }
+
+    // Getters and setters for upvotes and downvotes
+    public int getUpvotes() { return upvotes; }
+    public void setUpvotes(int upvotes) { this.upvotes = upvotes; }
+
+    public int getDownvotes() { return downvotes; }
+    public void setDownvotes(int downvotes) { this.downvotes = downvotes; }
 
     public String getEventName() { return eventName; }
     public void setEventName(String eventName) { this.eventName = eventName; }
@@ -51,12 +55,4 @@ public class Event {
 
     public double getLongitude() { return longitude; }
     public void setLongitude(double longitude) { this.longitude = longitude; }
-
-    public List<Comment> getComments() { return comments; }
-    public void setComments(List<Comment> comments) { this.comments = comments; }
-
-    // Method to add a comment
-    public void addComment(Comment comment) {
-        this.comments.add(comment);
-    }
 }
