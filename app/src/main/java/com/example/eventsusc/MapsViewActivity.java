@@ -1,7 +1,10 @@
 package com.example.eventsusc;
 
 import androidx.fragment.app.FragmentActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,6 +25,7 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
     private GoogleMap mMap;
     private ActivityMapsViewBinding binding;
     private DatabaseReference eventsDatabaseReference;
+    private Button addEventButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,17 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        // Initialize and set up the "Add Event" button
+        addEventButton = findViewById(R.id.add_event_button);
+        addEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start AddEventActivity when the button is clicked
+                Intent intent = new Intent(MapsViewActivity.this, AddEventActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
