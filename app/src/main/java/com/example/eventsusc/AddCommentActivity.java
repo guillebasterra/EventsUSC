@@ -55,28 +55,30 @@ public class AddCommentActivity extends AppCompatActivity {
     }
 
     private void addCommentToFirebase() {
-        // Get input values
-        String commentTitle = commentTitleInput.getText().toString().trim();
+        // Get the comment text
         String commentText = commentTextInput.getText().toString().trim();
 
-        // Validate inputs (cannot leave empty)
-        if (TextUtils.isEmpty(commentTitle) || TextUtils.isEmpty(commentText)) {
-            Toast.makeText(this, "Please fill in both fields.", Toast.LENGTH_SHORT).show();
+        // Validate the input (cannot leave empty)
+        if (TextUtils.isEmpty(commentText)) {
+            Toast.makeText(this, "Please enter a comment.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Generate unique comment ID and create comment object
-        String commentId = commentsDatabaseReference.push().getKey();
-        Comment comment = new Comment(commentId, commentTitle, commentText);
+        // Generate user information and timestamp
+        String userName = "Anonymous"; // Replace with actual user name if available
+        long timestamp = System.currentTimeMillis();
 
-        // Store comment in Firebase
+        // Generate unique comment ID and create the Comment object
+        String commentId = commentsDatabaseReference.push().getKey();
+        Comment comment = new Comment(userName, commentText, timestamp);
+
+        // Store the comment in Firebase
         if (commentId != null) {
             commentsDatabaseReference.child(commentId).setValue(comment)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(AddCommentActivity.this, "Comment added successfully!", Toast.LENGTH_SHORT).show();
-                            // Clear input fields after submission
-                            commentTitleInput.setText("");
+                            // Clear the input field after submission
                             commentTextInput.setText("");
                         } else {
                             Toast.makeText(AddCommentActivity.this, "Failed to add comment: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -84,4 +86,5 @@ public class AddCommentActivity extends AppCompatActivity {
                     });
         }
     }
+
 }

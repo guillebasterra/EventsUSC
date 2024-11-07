@@ -1,27 +1,37 @@
 package com.example.eventsusc;
 
 public class Comment {
-    private String commentId;
-    private String commentTitle;
-    private String commentText;
+    private String userName;
+    private String text;
+    private long timestamp;
 
-    // Default constructor (required for Firebase)
+    // Default constructor required for calls to DataSnapshot.getValue(Comment.class)
     public Comment() {}
 
-    // Constructor
-    public Comment(String commentId, String commentTitle, String commentText) {
-        this.commentId = commentId;
-        this.commentTitle = commentTitle;
-        this.commentText = commentText;
+    public Comment(String userName, String text, long timestamp) {
+        this.userName = userName;
+        this.text = text;
+        this.timestamp = timestamp;
     }
 
-    // Getters and setters
-    public String getCommentId() { return commentId; }
-    public void setCommentId(String commentId) { this.commentId = commentId; }
+    // Getter for userName
+    public String getUserName() {
+        return userName;
+    }
 
-    public String getCommentTitle() { return commentTitle; }
-    public void setCommentTitle(String commentTitle) { this.commentTitle = commentTitle; }
+    // Getter for text
+    public String getText() {
+        return text;
+    }
 
-    public String getCommentText() { return commentText; }
-    public void setCommentText(String commentText) { this.commentText = commentText; }
+    // Getter for timestamp
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    // Optional: Method to format timestamp for display
+    public String getFormattedTimestamp() {
+        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(null);
+        return dateFormat.format(new java.util.Date(timestamp));
+    }
 }

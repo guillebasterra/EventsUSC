@@ -51,6 +51,10 @@ dependencies {
     // google map dependency
     implementation("com.google.android.gms:play-services-maps:18.0.2")
 
+    // RecyclerView dependency
+    implementation("androidx.recyclerview:recyclerview:1.2.1")
+
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

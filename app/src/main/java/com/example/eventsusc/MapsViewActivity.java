@@ -12,6 +12,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.eventsusc.databinding.ActivityMapsViewBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -20,12 +21,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class MapsViewActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private ActivityMapsViewBinding binding;
     private DatabaseReference eventsDatabaseReference;
     private Button addEventButton;
+
+    // HashMap to store marker-event ID pairs
+    private HashMap<Marker, String> markerEventMap = new HashMap<>();
 
     // Variables to hold user data
     private String userUID;
@@ -76,6 +82,22 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
 
         // Load events from Firebase and add markers
         loadEventsAndAddMarkers();
+
+        // Set a listener for marker clicks
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                // Retrieve the event ID associated with this marker
+                String eventId = markerEventMap.get(marker);
+                if (eventId != null) {
+                    // Start CommentActivity and pass the event ID
+                    Intent intent = new Intent(MapsViewActivity.this, CommentActivity.class);
+                    intent.putExtra("EVENT_ID", eventId);
+                    startActivity(intent);
+                }
+                return true; // Return true to indicate that we have handled the click
+            }
+        });
     }
 
     private void loadEventsAndAddMarkers() {
@@ -83,14 +105,17 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot eventSnapshot : dataSnapshot.getChildren()) {
-                    // Assuming Event class has getLatitude() and getLongitude() methods
+                    // Assuming Event class has getLatitude(), getLongitude(), and getEventId() methods
                     Event event = eventSnapshot.getValue(Event.class);
                     if (event != null) {
                         LatLng eventLocation = new LatLng(event.getLatitude(), event.getLongitude());
-                        mMap.addMarker(new MarkerOptions()
+                        Marker marker = mMap.addMarker(new MarkerOptions()
                                 .position(eventLocation)
                                 .title(event.getEventName())
                                 .snippet(event.getEventDescription()));
+
+                        // Store the marker and associated event ID in the HashMap
+                        markerEventMap.put(marker, event.getEventId());
                     }
                 }
 

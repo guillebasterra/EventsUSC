@@ -41,6 +41,8 @@
             android:exported="true"
             android:theme="@style/Theme.EventsUSC" />
 
+        <activity android:name=".CommentActivity" />
+
         <activity android:name=".AccountCreatedActivity" />
 
         <activity
