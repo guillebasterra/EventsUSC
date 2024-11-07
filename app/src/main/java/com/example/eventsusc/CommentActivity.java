@@ -2,22 +2,19 @@ package com.example.eventsusc;
 
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class CommentActivity extends AppCompatActivity {
 
     private LinearLayout commentsContainer;
-    private DatabaseReference commentsDatabaseReference;
-    private String eventId;
+    private EditText newCommentInput;
+    private Button addCommentButton;
     private String eventName;
     private String eventDescription;
 
@@ -26,23 +23,25 @@ public class CommentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        // Get the event details passed from MapsViewActivity
-        eventId = getIntent().getStringExtra("EVENT_ID");
+        // Get event details passed from MapsViewActivity
         eventName = getIntent().getStringExtra("EVENT_NAME");
         eventDescription = getIntent().getStringExtra("EVENT_DESCRIPTION");
 
-        // Initialize the LinearLayout container
+        // Initialize UI elements
         commentsContainer = findViewById(R.id.comments_container);
+        newCommentInput = findViewById(R.id.new_comment_input);
+        addCommentButton = findViewById(R.id.add_comment_button);
 
-        // Display the event name and description at the top
+        // Display event name and description at the top
         addEventDetailsToView();
 
-        // Set up Firebase reference to the comments of the specific event
-        commentsDatabaseReference = FirebaseDatabase.getInstance("https://eventsusc-38901-default-rtdb.firebaseio.com/")
-                .getReference("Events").child(eventId).child("Comments");
-
-        // Load comments from Firebase
-        loadComments();
+        // Add comment button functionality
+        addCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addCommentLocally();
+            }
+        });
     }
 
     private void addEventDetailsToView() {
@@ -65,39 +64,26 @@ public class CommentActivity extends AppCompatActivity {
         commentsContainer.addView(eventDescriptionTextView);
     }
 
-    private void loadComments() {
-        commentsDatabaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                commentsContainer.removeAllViews(); // Clear existing views
-                addEventDetailsToView(); // Add event details at the top again
+    private void addCommentLocally() {
+        // Get the comment text from the EditText
+        String commentText = newCommentInput.getText().toString().trim();
 
-                for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
-                    Comment comment = commentSnapshot.getValue(Comment.class);
-                    if (comment != null) {
-                        addCommentToView(comment);
-                    }
-                }
-            }
+        if (commentText.isEmpty()) {
+            Toast.makeText(this, "Please enter a comment", Toast.LENGTH_SHORT).show();
+            return; // Exit early if no comment text
+        }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(CommentActivity.this, "Failed to load comments", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void addCommentToView(Comment comment) {
-        // Create a new TextView for each comment
+        // Create a new TextView for the comment
         TextView commentTextView = new TextView(this);
-        commentTextView.setText(String.format("%s: %s", comment.getUserName(), comment.getText()));
+        commentTextView.setText("Anonymous: " + commentText);
         commentTextView.setPadding(8, 8, 8, 8);
         commentTextView.setTextSize(16);
         commentTextView.setGravity(Gravity.START);
 
-        // Optional: Add timestamp as a separate TextView
+        // Optional: Create a TextView for the timestamp
         TextView timestampTextView = new TextView(this);
-        timestampTextView.setText(comment.getFormattedTimestamp());
+        String formattedTimestamp = android.text.format.DateFormat.format("MM/dd/yyyy hh:mm:ss", System.currentTimeMillis()).toString();
+        timestampTextView.setText(formattedTimestamp);
         timestampTextView.setPadding(8, 4, 8, 12);
         timestampTextView.setTextSize(12);
         timestampTextView.setGravity(Gravity.END);
@@ -105,5 +91,8 @@ public class CommentActivity extends AppCompatActivity {
         // Add the TextViews to the container
         commentsContainer.addView(commentTextView);
         commentsContainer.addView(timestampTextView);
+
+        // Clear the input field
+        newCommentInput.setText("");
     }
 }

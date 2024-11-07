@@ -1,50 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Event title and description at the top -->
-    <TextView
-        android:id="@+id/event_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="8dp"
-        android:text="Event Name" />
-
-    <TextView
-        android:id="@+id/event_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_gravity="center_horizontal"
-        android:paddingBottom="16dp"
-        android:text="Event Description" />
-
-    <Button
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back to Map"
-        android:padding="8dp"
-        android:layout_marginBottom="16dp" />
-
-    <Button
-        android:id="@+id/get_directions_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Get Directions"
-        android:padding="8dp"
-        android:layout_margin="16dp"
-        android:layout_gravity="top|end" />
-
-    <!-- Comments container -->
     <LinearLayout
-        android:id="@+id/comments_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
-</LinearLayout>
+        android:orientation="vertical">
+
+        <!-- Event title and description at the top -->
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="8dp"
+            android:text="Event Name" />
+
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp"
+            android:text="Event Description" />
+
+        <!-- Back and Get Directions buttons -->
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back to Map"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <Button
+            android:id="@+id/get_directions_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Directions"
+            android:padding="12dp"
+            android:layout_gravity="top|end" />
+
+        <!-- Comments title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comments"
+            android:textSize="24sp"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="16dp" />
+
+        <!-- Comments container -->
+        <LinearLayout
+            android:id="@+id/comments_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp" />
+
+        <!-- Input for new comment -->
+        <EditText
+            android:id="@+id/new_comment_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your comment"
+            android:padding="12dp"
+            android:inputType="text"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Add Comment button -->
+        <Button
+            android:id="@+id/add_comment_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Comment"
+            android:padding="12dp"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+</ScrollView>
