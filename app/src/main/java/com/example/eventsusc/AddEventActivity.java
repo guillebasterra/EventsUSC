@@ -1,5 +1,6 @@
 package com.example.eventsusc;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -57,7 +58,16 @@ public class AddEventActivity extends AppCompatActivity {
                 eventLocationInput.setText("");
                 eventLatitudeInput.setText("");
                 eventLongitudeInput.setText("");
+
+                // Show a toast message
                 Toast.makeText(AddEventActivity.this, "Event creation canceled", Toast.LENGTH_SHORT).show();
+
+                // Navigate back to MapsViewActivity
+                Intent intent = new Intent(AddEventActivity.this, MapsViewActivity.class);
+                startActivity(intent);
+
+                // Optional: Finish the AddEventActivity to prevent going back to it
+                finish();
             }
         });
     }
