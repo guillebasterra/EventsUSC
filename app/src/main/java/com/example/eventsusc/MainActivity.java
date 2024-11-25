@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    private Intent nextStartedActivity;
+    private String latestToastMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,5 +99,28 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    // Override startActivity to capture the started activity
+    @Override
+    public void startActivity(Intent intent) {
+        nextStartedActivity = intent;
+        super.startActivity(intent);
+    }
+
+    // Add a getter for the captured activity
+    public Intent getNextStartedActivity() {
+        return nextStartedActivity;
+    }
+
+    // Add a helper to show toast messages and store the latest message
+    public void showToast(String message) {
+        latestToastMessage = message;
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    // Add a getter for the latest toast message
+    public String getLatestToastMessage() {
+        return latestToastMessage;
     }
 }
