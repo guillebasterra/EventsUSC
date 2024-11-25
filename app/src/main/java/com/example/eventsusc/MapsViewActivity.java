@@ -142,4 +142,8 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
     }
+    public GoogleMap getMap() {
+        return mMap;
+    }
+
 }
