@@ -14,11 +14,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
 
-    private EditText emailInput;
-    private EditText passwordInput;
-    private Button loginButton;
+    EditText emailInput;
+    EditText passwordInput;
+    Button loginButton;
     private Button newAccountButton;
-    private Button forgotPasswordButton; // New button
+    Button forgotPasswordButton; // New button
 
     private FirebaseAuth mAuth;
 

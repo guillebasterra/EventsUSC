@@ -14,6 +14,9 @@ public class User {
         this.displayName = displayName;
     }
 
+    public User(String mail, String testUser) {
+    }
+
     // Getters and setters
     public String getUid() {
         return uid;
