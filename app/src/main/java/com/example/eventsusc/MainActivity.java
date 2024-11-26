@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 String password = passwordInput.getText().toString().trim();
 
                 if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    Toast.makeText(MainActivity.this, "Please enter both email and password.", Toast.LENGTH_SHORT).show();
+                    showToast("Please enter both email and password.");
                     return;
                 }
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(MainActivity.this, task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "Login successful.", Toast.LENGTH_SHORT).show();
+                                showToast("Login successful");
 
                                 // Proceed to the next activity (e.g., MapsViewActivity)
                                 Intent intent = new Intent(MainActivity.this, MapsViewActivity.class);
