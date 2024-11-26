@@ -11,7 +11,7 @@
 
         <!-- Event title and description at the top -->
         <TextView
-            android:id="@+id/event_name"
+            android:id="@+id/event_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="24sp"
@@ -20,7 +20,7 @@
             android:text="Event Name" />
 
         <TextView
-            android:id="@+id/event_description"
+            android:id="@+id/event_description_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16sp"
@@ -28,21 +28,66 @@
             android:paddingBottom="16dp"
             android:text="Event Description" />
 
-        <!-- Back and Get Directions buttons -->
+        <!-- Vote buttons and display -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp">
+
+            <!-- Upvote Button with Icon -->
+            <Button
+                android:id="@+id/upvote_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▲ Upvote"
+                android:padding="8dp"
+                android:textSize="14sp"
+                android:backgroundTint="@color/teal_200"
+                android:textColor="@android:color/white" />
+
+            <!-- Vote Count Display -->
+            <TextView
+                android:id="@+id/vote_count_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:gravity="center"
+                android:text="0 upvotes | 0 downvotes" />
+
+            <!-- Downvote Button with Icon -->
+            <Button
+                android:id="@+id/downvote_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="▼ Downvote"
+                android:padding="8dp"
+                android:textSize="14sp"
+                android:backgroundTint="@color/black"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+        <!-- Back to Map button -->
         <Button
             android:id="@+id/back_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back to Map"
-            android:padding="12dp"
+            android:padding="8dp"
             android:layout_marginBottom="16dp" />
 
+        <!-- Get Directions button -->
         <Button
             android:id="@+id/get_directions_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get Directions"
-            android:padding="12dp"
+            android:padding="8dp"
+            android:layout_margin="16dp"
             android:layout_gravity="top|end" />
 
         <!-- Comments title -->
