@@ -4,9 +4,14 @@ import android.os.IBinder;
 import android.view.WindowManager;
 import androidx.test.espresso.Root;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 public class ToastMatcher extends TypeSafeMatcher<Root> {
+
+    public static Matcher<Root> isToast() {
+        return new ToastMatcher();
+    }
 
     @Override
     public void describeTo(Description description) {
