@@ -15,9 +15,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class AccountCreatedActivity extends AppCompatActivity {
 
-    private DatabaseReference databaseReference;
-    private TextView accountCreatedMessage;
-    private TextView userEmail;
+    DatabaseReference databaseReference;
+    TextView accountCreatedMessage;
+    TextView userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

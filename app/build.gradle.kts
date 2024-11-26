@@ -48,14 +48,26 @@ dependencies {
     implementation(libs.firebase.database)
     implementation("com.google.android.gms:play-services-auth:20.5.0")
 
-    // google map dependency
+    // Google Maps dependency
     implementation("com.google.android.gms:play-services-maps:18.0.2")
 
     // RecyclerView dependency
     implementation("androidx.recyclerview:recyclerview:1.2.1")
 
-
+    // Unit test dependencies
     testImplementation(libs.junit)
-    androidTestImplementation(libs.ext.junit)
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("androidx.test:core:1.5.0")
+    testImplementation("androidx.test.ext:junit:1.1.5")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    // Instrumented test dependencies
+    androidTestImplementation("androidx.test.ext:junit:1.1.5") // Add this
     androidTestImplementation(libs.espresso.core)
+
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
 }
+
+
+

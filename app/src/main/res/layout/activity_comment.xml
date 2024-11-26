@@ -37,7 +37,6 @@
             android:layout_gravity="center"
             android:layout_marginBottom="16dp">
 
-            <!-- Upvote Button with Icon -->
             <Button
                 android:id="@+id/upvote_button"
                 android:layout_width="wrap_content"
@@ -48,7 +47,6 @@
                 android:backgroundTint="@color/teal_200"
                 android:textColor="@android:color/white" />
 
-            <!-- Vote Count Display -->
             <TextView
                 android:id="@+id/vote_count_text"
                 android:layout_width="wrap_content"
@@ -59,7 +57,6 @@
                 android:gravity="center"
                 android:text="0 upvotes | 0 downvotes" />
 
-            <!-- Downvote Button with Icon -->
             <Button
                 android:id="@+id/downvote_button"
                 android:layout_width="wrap_content"
