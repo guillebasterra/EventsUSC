@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,6 +55,10 @@ public class CommentActivity extends AppCompatActivity {
         eventNameTextView.setText("Event: " + eventName);
         eventDescriptionTextView.setText("Description: " + eventDescription);
 
+        // Initialize Delete Event button
+        Button deleteEventButton = findViewById(R.id.delete_event_button);
+        deleteEventButton.setOnClickListener(v -> confirmAndDeleteEvent());
+
         // Initialize the comments container and comment input
         commentsContainer = findViewById(R.id.comments_container);
         newCommentInput = findViewById(R.id.new_comment_input);
@@ -93,6 +98,27 @@ public class CommentActivity extends AppCompatActivity {
         // Back and Get Directions buttons
         findViewById(R.id.back_button).setOnClickListener(v -> finish());
         findViewById(R.id.get_directions_button).setOnClickListener(v -> retrieveEventLocationAndOpenMaps());
+    }
+
+    private void confirmAndDeleteEvent() {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Event")
+                .setMessage("Are you sure you want to delete this event?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteEventFromFirebase())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteEventFromFirebase() {
+        eventsDatabaseReference.removeValue()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(CommentActivity.this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
+                        finish(); // Go back to the previous screen
+                    } else {
+                        Toast.makeText(CommentActivity.this, "Failed to delete event: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void loadEventData() {
