@@ -23,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class MapsViewActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -31,6 +30,7 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
     private ActivityMapsViewBinding binding;
     private DatabaseReference eventsDatabaseReference;
     private Button addEventButton;
+    private Button logoutButton; // Added logout button
 
     // HashMap to store marker-event ID pairs
     private HashMap<Marker, String> markerEventMap = new HashMap<>();
@@ -74,6 +74,22 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
                 // Start AddEventActivity when the button is clicked
                 Intent intent = new Intent(MapsViewActivity.this, AddEventActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        // Initialize and set up the "Logout" button
+        logoutButton = findViewById(R.id.logout_button);
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Logout the user
+                Toast.makeText(MapsViewActivity.this, "Logging out...", Toast.LENGTH_SHORT).show();
+
+                // Return to MainActivity (Login Screen)
+                Intent intent = new Intent(MapsViewActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
             }
         });
     }
@@ -184,5 +200,4 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
     public GoogleMap getMap() {
         return mMap;
     }
-
 }

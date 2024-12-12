@@ -87,8 +87,8 @@ public class MainActivityTest {
         // Set valid inputs
         EditText emailInput = activity.findViewById(R.id.email_input);
         EditText passwordInput = activity.findViewById(R.id.password_input);
-        emailInput.setText("valid@example.com");
-        passwordInput.setText("password123");
+        emailInput.setText("johnsmith7@gmail.com");
+        passwordInput.setText("Johnsmith7");
 
         // Simulate login button click
         Button loginButton = activity.findViewById(R.id.login_button);

@@ -73,9 +73,38 @@ public class MainActivity extends AppCompatActivity {
         newAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Code to create a new account
+                String email = emailInput.getText().toString().trim();
+                String password = passwordInput.getText().toString().trim();
+
+                // Validate the inputs
+                if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                    showToast("Please enter both email and password to create an account.");
+                    return;
+                }
+
+                if (password.length() < 6) {
+                    showToast("Password must be at least 6 characters long.");
+                    return;
+                }
+
+                // Create a new account using Firebase Authentication
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(MainActivity.this, task -> {
+                            if (task.isSuccessful()) {
+                                showToast("Account created successfully.");
+
+                                // Optionally, navigate to another activity (e.g., MapsViewActivity)
+                                Intent intent = new Intent(MainActivity.this, MapsViewActivity.class);
+                                intent.putExtra("USER_EMAIL", email); // Pass user email
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                showToast("Account creation failed: " + task.getException().getMessage());
+                            }
+                        });
             }
         });
+
 
         // Set up forgot password button click listener
         forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
