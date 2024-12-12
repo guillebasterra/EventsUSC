@@ -1,5 +1,6 @@
 package com.example.eventsusc;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MapsViewActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -84,25 +86,17 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
         loadEventsAndAddMarkers();
 
         // Set a listener for marker clicks
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                // Retrieve the event ID, name, and description associated with this marker
-                String eventId = markerEventMap.get(marker);
-                String eventName = marker.getTitle(); // assuming title is set as event name
-                String eventDescription = marker.getSnippet(); // assuming snippet is set as description
+        mMap.setOnMarkerClickListener(marker -> {
+            // Retrieve the event ID, name, and description associated with this marker
+            String eventId = markerEventMap.get(marker);
+            String eventName = marker.getTitle(); // assuming title is set as event name
+            String eventDescription = marker.getSnippet(); // assuming snippet is set as description
 
-                if (eventId != null) {
-                    // Start CommentActivity and pass the event ID, name, description, and user ID
-                    Intent intent = new Intent(MapsViewActivity.this, CommentActivity.class);
-                    intent.putExtra("EVENT_ID", eventId);
-                    intent.putExtra("EVENT_NAME", eventName);
-                    intent.putExtra("EVENT_DESCRIPTION", eventDescription);
-                    intent.putExtra("USER_UID", userUID); // Pass the user ID to CommentActivity
-                    startActivity(intent);
-                }
-                return true; // Return true to indicate that we have handled the click
+            if (eventId != null) {
+                // Show options for the clicked marker (View Details or Delete)
+                showMarkerOptions(marker, eventId, eventName, eventDescription);
             }
+            return true; // Return true to indicate that we have handled the click
         });
     }
 
@@ -142,6 +136,51 @@ public class MapsViewActivity extends FragmentActivity implements OnMapReadyCall
             }
         });
     }
+
+    private void showMarkerOptions(Marker marker, String eventId, String eventName, String eventDescription) {
+        new AlertDialog.Builder(this)
+                .setTitle(eventName)
+                .setMessage("Choose an action for this event:")
+                .setPositiveButton("View Details", (dialog, which) -> {
+                    // Start CommentActivity to view details
+                    Intent intent = new Intent(MapsViewActivity.this, CommentActivity.class);
+                    intent.putExtra("EVENT_ID", eventId);
+                    intent.putExtra("EVENT_NAME", eventName);
+                    intent.putExtra("EVENT_DESCRIPTION", eventDescription);
+                    intent.putExtra("USER_UID", userUID); // Pass the user ID to CommentActivity
+                    startActivity(intent);
+                })
+                .setNegativeButton("Delete Event", (dialog, which) -> {
+                    // Confirm and delete the event
+                    confirmAndDeleteEvent(marker, eventId);
+                })
+                .setNeutralButton("Cancel", null)
+                .show();
+    }
+
+    private void confirmAndDeleteEvent(Marker marker, String eventId) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Event")
+                .setMessage("Are you sure you want to delete this event?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    // Delete the event from Firebase
+                    eventsDatabaseReference.child(eventId).removeValue()
+                            .addOnCompleteListener(task -> {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(MapsViewActivity.this, "Event deleted successfully.", Toast.LENGTH_SHORT).show();
+                                    // Remove the marker from the map
+                                    marker.remove();
+                                    // Remove the marker from the HashMap
+                                    markerEventMap.remove(marker);
+                                } else {
+                                    Toast.makeText(MapsViewActivity.this, "Failed to delete event: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
     public GoogleMap getMap() {
         return mMap;
     }
