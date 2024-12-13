@@ -1,11 +1,15 @@
 package com.example.eventsusc;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.Date;
+
 public class Comment {
     private String userName;
     private String text;
     private long timestamp;
 
-    // Default constructor required for calls to DataSnapshot.getValue(Comment.class)
+    // Default constructor required for Firebase
     public Comment() {}
 
     public Comment(String userName, String text, long timestamp) {
@@ -14,24 +18,20 @@ public class Comment {
         this.timestamp = timestamp;
     }
 
-    // Getter for userName
     public String getUserName() {
         return userName;
     }
 
-    // Getter for text
     public String getText() {
         return text;
     }
 
-    // Getter for timestamp
     public long getTimestamp() {
         return timestamp;
     }
 
-    // Optional: Method to format timestamp for display
     public String getFormattedTimestamp() {
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(null);
-        return dateFormat.format(new java.util.Date(timestamp));
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault());
+        return sdf.format(new Date(timestamp));
     }
 }

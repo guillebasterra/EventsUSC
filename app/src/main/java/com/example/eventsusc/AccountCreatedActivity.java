@@ -55,6 +55,8 @@ public class AccountCreatedActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(AccountCreatedActivity.this, "Failed to load user data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
             }
+
+
         });
     }
 }
